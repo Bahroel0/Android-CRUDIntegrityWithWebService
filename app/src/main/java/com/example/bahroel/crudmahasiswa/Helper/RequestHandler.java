@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RequestHandler {
-    public String sendPostRequest(String requestURL, HashMap<Integer,String>postDataParams){
+    public String sendPostRequest(String requestURL, HashMap<String,String>postDataParams){
         URL url;
         StringBuilder stringBuilder = new StringBuilder();
         try{
@@ -68,10 +68,10 @@ public class RequestHandler {
 
     }
 
-    private String getPostDataString(HashMap<Integer, String> postDataParams) throws UnsupportedEncodingException {
+    private String getPostDataString(HashMap<String, String> postDataParams) throws UnsupportedEncodingException {
         StringBuilder stringBuilder = new StringBuilder();
         boolean first = true;
-        for (Map.Entry<Integer,String> entry : postDataParams.entrySet()){
+        for (Map.Entry<String,String> entry : postDataParams.entrySet()){
             if(first){
                 first = false;
             }else{

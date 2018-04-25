@@ -1,10 +1,9 @@
 package com.example.bahroel.crudmahasiswa.Model;
 
 public class Mahasiswa {
-    private int nrp;
-    private String nama, jurusan, kelas, telp, alamat;
+    private String nrp, nama, jurusan, kelas, telp, alamat;
 
-    public Mahasiswa(int nrp, String nama, String jurusan, String kelas, String telp, String alamat) {
+    public Mahasiswa(String nrp, String nama, String jurusan, String kelas, String telp, String alamat) {
         this.nrp = nrp;
         this.nama = nama;
         this.jurusan = jurusan;
@@ -13,9 +12,9 @@ public class Mahasiswa {
         this.alamat = alamat;
     }
 
-    public int getNrp() { return nrp; }
+    public String getNrp() { return nrp; }
 
-    public void setNrp(int nrp) { this.nrp = nrp; }
+    public void setNrp(String nrp) { this.nrp = nrp; }
 
     public String getNama() { return nama; }
 
