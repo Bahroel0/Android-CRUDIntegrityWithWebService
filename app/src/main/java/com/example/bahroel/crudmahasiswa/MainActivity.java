@@ -1,5 +1,6 @@
 package com.example.bahroel.crudmahasiswa;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,8 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.example.bahroel.crudmahasiswa.Api.ApiMahasiswa;
+import com.example.bahroel.crudmahasiswa.Helper.RequestHandler;
 import com.example.bahroel.crudmahasiswa.Model.Mahasiswa;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,18 +59,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+//        readMahasiswa();
     }
 
     private void createMahasiswa() {
-        int nrp         = Integer.valueOf(edtNrp.getText().toString().trim());
+        String nrp      = edtNrp.getText().toString().trim();
         String nama     = edtNama.getText().toString().trim();
         String jurusan  = edtJurusan.getText().toString().trim();
         String kelas    = edtKelas.getText().toString().trim();
         String telp     = edtTelp.getText().toString().trim();
         String alamat   = edtAlamat.getText().toString().trim();
 
-        if(TextUtils.isEmpty(edtNrp.getText().toString().trim())){
+        if(TextUtils.isEmpty(nrp)){
             edtNrp.setError("Please enter nrp");
             edtNrp.requestFocus();
             return;
@@ -83,9 +90,60 @@ public class MainActivity extends AppCompatActivity {
             edtAlamat.setError("Please enter alamat");
             edtAlamat.requestFocus();
         }
-        HashMap<Integer,String> params = new HashMap<>();
-        params.put(nrp, "nrp");
+        HashMap<String,String> params = new HashMap<>();
+        params.put("nrp", nrp);
+        params.put("nama", nama);
+        params.put("jurusan", jurusan);
+        params.put("kelas", kelas);
+        params.put("telp", telp);
+        params.put("alamat", alamat);
 
+        PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_C_MHS, params, CODE_POST_REQUEST);
+        request.execute();
+
+
+    }
+
+
+    private class PerformNetworkRequest extends AsyncTask<Void,Void,String>{
+        String url;
+        HashMap<String, String> params;
+        int requestCode;
+        PerformNetworkRequest(String url, HashMap<String, String> params, int
+                requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressBar.setVisibility(View.GONE);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    Toast.makeText(getApplicationContext(),
+                            object.getString("message"), Toast.LENGTH_LONG).show();
+                    //refreshMahasiswaList(object.getJSONArray("mahasiswa"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+            if (requestCode == CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+            if (requestCode == CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+            return null;
+        }
 
     }
 }

@@ -49,7 +49,7 @@ public class RequestHandler {
         return stringBuilder.toString();
     }
 
-    public String senGetRequest(String requestURL){
+    public String sendGetRequest(String requestURL){
         StringBuilder stringBuilder = new StringBuilder();
         try {
             URL url = new URL(requestURL);
