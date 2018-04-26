@@ -70,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readMahasiswa() {
-        PerformNetworkRequest request = new
-                PerformNetworkRequest(ApiMahasiswa.URL_R_MHS, null, CODE_GET_REQUEST);
+        PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_R_MHS, null, CODE_GET_REQUEST);
         request.execute();
     }
 
@@ -119,13 +118,34 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void deleteMahasiswa(String nrp) {
+        PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_D_MHS + nrp, null,CODE_GET_REQUEST);
+        request.execute();
+    }
+
+    public void refreshMahasiswaList(JSONArray mahasiswa) throws JSONException{
+        mahasiswaList.clear();
+        for (int i = 0; i < mahasiswa.length(); i++) {
+
+            JSONObject obj = mahasiswa.getJSONObject(i);
+            mahasiswaList.add(new Mahasiswa(
+                    obj.getString("nrp"),
+                    obj.getString("nama"),
+                    obj.getString("jurusan"),
+                    obj.getString("kelas"),
+                    obj.getString("telp"),
+                    obj.getString("alamat")
+            ));
+        }
+        MahasiswaAdapter adapter = new MahasiswaAdapter(mahasiswaList);
+        listView.setAdapter(adapter);
+    }
 
     private class PerformNetworkRequest extends AsyncTask<Void,Void,String>{
         String url;
         HashMap<String, String> params;
         int requestCode;
-        PerformNetworkRequest(String url, HashMap<String, String> params, int
-                requestCode) {
+        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
@@ -163,30 +183,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void refreshMahasiswaList(JSONArray mahasiswa) throws JSONException{
-        mahasiswaList.clear();
-        for (int i = 0; i < mahasiswa.length(); i++) {
-
-            JSONObject obj = mahasiswa.getJSONObject(i);
-            mahasiswaList.add(new Mahasiswa(
-                    obj.getString("nrp"),
-                    obj.getString("nama"),
-                    obj.getString("jurusan"),
-                    obj.getString("kelas"),
-                    obj.getString("telp"),
-                    obj.getString("alamat")
-            ));
-        }
-        MahasiswaAdapter adapter = new MahasiswaAdapter(mahasiswaList);
-        listView.setAdapter(adapter);
-    }
-
-
     public class MahasiswaAdapter extends ArrayAdapter<Mahasiswa> {
         List<Mahasiswa> mahasiswaList;
         public MahasiswaAdapter(List<Mahasiswa> mahasiswaList) {
-            super(MainActivity.this, R.layout.layout_mahasiswa_list,
-                    mahasiswaList);
+            super(MainActivity.this, R.layout.layout_mahasiswa_list, mahasiswaList);
             this.mahasiswaList=mahasiswaList;
         }
         public View getView(int position, View convertView, ViewGroup parent){
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                                     DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int
                                                 which) {
-                                            //deleteMahasiswa(mahasiswa.getId());
+                                            deleteMahasiswa(mahasiswa.getNrp());
                                         }
                                     })
                             .setNegativeButton(android.R.string.no, new
@@ -237,4 +237,6 @@ public class MainActivity extends AppCompatActivity {
             return listViewItem;
         }
     }
+
+
 }
