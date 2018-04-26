@@ -1,20 +1,27 @@
 package com.example.bahroel.crudmahasiswa;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bahroel.crudmahasiswa.Api.ApiMahasiswa;
 import com.example.bahroel.crudmahasiswa.Helper.RequestHandler;
 import com.example.bahroel.crudmahasiswa.Model.Mahasiswa;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,7 +66,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-//        readMahasiswa();
+        readMahasiswa();
+    }
+
+    private void readMahasiswa() {
+        PerformNetworkRequest request = new
+                PerformNetworkRequest(ApiMahasiswa.URL_R_MHS, null, CODE_GET_REQUEST);
+        request.execute();
     }
 
     private void createMahasiswa() {
@@ -132,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!error) {
                     // toast masih error dan tidak muncul
                     Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_LONG).show();
-                    //refreshMahasiswaList(object.getJSONArray("mahasiswa"));
+                    refreshMahasiswaList(object.getJSONArray("mahasiswa"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -148,5 +161,80 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+    }
+
+    public void refreshMahasiswaList(JSONArray mahasiswa) throws JSONException{
+        mahasiswaList.clear();
+        for (int i = 0; i < mahasiswa.length(); i++) {
+
+            JSONObject obj = mahasiswa.getJSONObject(i);
+            mahasiswaList.add(new Mahasiswa(
+                    obj.getString("nrp"),
+                    obj.getString("nama"),
+                    obj.getString("jurusan"),
+                    obj.getString("kelas"),
+                    obj.getString("telp"),
+                    obj.getString("alamat")
+            ));
+        }
+        MahasiswaAdapter adapter = new MahasiswaAdapter(mahasiswaList);
+        listView.setAdapter(adapter);
+    }
+
+
+    public class MahasiswaAdapter extends ArrayAdapter<Mahasiswa> {
+        List<Mahasiswa> mahasiswaList;
+        public MahasiswaAdapter(List<Mahasiswa> mahasiswaList) {
+            super(MainActivity.this, R.layout.layout_mahasiswa_list,
+                    mahasiswaList);
+            this.mahasiswaList=mahasiswaList;
+        }
+        public View getView(int position, View convertView, ViewGroup parent){
+            LayoutInflater inflater = getLayoutInflater();
+            View listViewItem = inflater.inflate(R.layout.layout_mahasiswa_list,null, true);
+            TextView textViewNama = listViewItem.findViewById(R.id.textViewNama);
+            TextView textViewUpdate =listViewItem.findViewById(R.id.textViewUpdate);
+            TextView textViewDelete =listViewItem.findViewById(R.id.textViewDelete);
+
+            final Mahasiswa mahasiswa = mahasiswaList.get(position);
+            textViewNama.setText(mahasiswa.getNama());
+            textViewUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isUpdating=true;
+                    edtNrp.setText(String.valueOf(mahasiswa.getNrp()));
+                    edtNama.setText(mahasiswa.getNama());
+                    edtJurusan.setText(mahasiswa.getAlamat());
+                    edtKelas.setText(mahasiswa.getKelas());
+                    edtTelp.setText(mahasiswa.getTelp());
+                    edtAlamat.setText(mahasiswa.getAlamat());
+                    btnAdd.setText("Update");
+                }
+            });
+            textViewDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new
+                            AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Delete " + mahasiswa.getNama())
+                            .setMessage("Are you sure you want to delete it?")
+                            .setPositiveButton(android.R.string.yes, new
+                                    DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int
+                                                which) {
+                                            //deleteMahasiswa(mahasiswa.getId());
+                                        }
+                                    })
+                            .setNegativeButton(android.R.string.no, new
+                                    DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int
+                                                which) {}
+                                    })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+            });
+            return listViewItem;
+        }
     }
 }
