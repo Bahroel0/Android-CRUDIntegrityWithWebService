@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         request.execute();
 
 
+
+
     }
 
 
@@ -126,9 +128,10 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             try {
                 JSONObject object = new JSONObject(s);
-                if (!object.getBoolean("error")) {
-                    Toast.makeText(getApplicationContext(),
-                            object.getString("message"), Toast.LENGTH_LONG).show();
+                boolean error = object.getBoolean("error");
+                if (!error) {
+                    // toast masih error dan tidak muncul
+                    Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_LONG).show();
                     //refreshMahasiswaList(object.getJSONArray("mahasiswa"));
                 }
             } catch (JSONException e) {
