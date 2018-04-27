@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 26 Apr 2018 pada 03.49
+-- Generation Time: 27 Apr 2018 pada 16.53
 -- Versi Server: 10.1.28-MariaDB
 -- PHP Version: 7.1.10
 
@@ -19,40 +19,40 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `crud_android`
+-- Database: `crud_mahasiswa`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_mahasiswa`
+-- Struktur dari tabel `profile`
 --
 
-CREATE TABLE `tb_mahasiswa` (
+CREATE TABLE `profile` (
   `nrp` varchar(10) NOT NULL,
-  `nama` varchar(100) NOT NULL,
+  `nama` varchar(50) NOT NULL,
+  `jurusan` varchar(50) NOT NULL,
   `kelas` varchar(20) NOT NULL,
   `telp` varchar(15) NOT NULL,
-  `alamat` text NOT NULL,
-  `jurusan` varchar(50) NOT NULL
+  `alamat` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `tb_mahasiswa`
+-- Dumping data untuk tabel `profile`
 --
 
-INSERT INTO `tb_mahasiswa` (`nrp`, `nama`, `kelas`, `telp`, `alamat`, `jurusan`) VALUES
-('1231', 'sdsdad', 'dasdasd', 'asdasdas', 'dasdasdas', 'asdada'),
-('232', 'sddsdf', 'sdfsdf', 'sdfsdfsd', 'fsdfsdfsdfs', 'sdfsdfsdfs');
+INSERT INTO `profile` (`nrp`, `nama`, `jurusan`, `kelas`, `telp`, `alamat`) VALUES
+('2', 'update', 'jurusan', 'weqwe', 'qweqweqw', 'eqweqwe'),
+('2103161005', 'Bahrul Amaruddin', 'Informatika', 'D3 A', '085732468067', 'desa bnacra');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `tb_mahasiswa`
+-- Indexes for table `profile`
 --
-ALTER TABLE `tb_mahasiswa`
+ALTER TABLE `profile`
   ADD PRIMARY KEY (`nrp`);
 COMMIT;
 

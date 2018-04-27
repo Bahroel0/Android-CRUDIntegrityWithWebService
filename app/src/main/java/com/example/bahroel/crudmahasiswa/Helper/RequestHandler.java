@@ -1,5 +1,8 @@
 package com.example.bahroel.crudmahasiswa.Helper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,10 +15,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class RequestHandler {
-    public String sendPostRequest(String requestURL, HashMap<String,String>postDataParams){
+    public String sendPostRequest(String requestURL, HashMap<String,String> postDataParams){
         URL url;
         StringBuilder stringBuilder = new StringBuilder();
         try{
@@ -30,6 +34,7 @@ public class RequestHandler {
             OutputStream outputStream = httpURLConnection.getOutputStream();
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
             bufferedWriter.write(getPostDataString(postDataParams));
+
             bufferedWriter.flush();
             bufferedWriter.close();
             outputStream.close();
@@ -68,21 +73,20 @@ public class RequestHandler {
 
     }
 
-    private String getPostDataString(HashMap<String, String> postDataParams) throws UnsupportedEncodingException {
-        StringBuilder stringBuilder = new StringBuilder();
-        boolean first = true;
-        for (Map.Entry<String,String> entry : postDataParams.entrySet()){
+    private String getPostDataString(HashMap<String,String> postDataParams) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        boolean first = false;
+        for(Map.Entry<String,String> entry : postDataParams.entrySet()){
             if(first){
                 first = false;
             }else{
-                stringBuilder.append("&");
-                stringBuilder.append(URLEncoder.encode(String.valueOf(entry.getKey()),"UTF-8"));
-                stringBuilder.append("=");
-                stringBuilder.append(URLEncoder.encode(String.valueOf(entry.getValue()),"UTF-8"));
+                result.append("&");
+                result.append(URLEncoder.encode(entry.getKey(),"UTF-8"));
+                result.append("=");
+                result.append(URLEncoder.encode(entry.getKey(),"UTF-8"));
             }
-
         }
-        return stringBuilder.toString();
+        return result.toString();
     }
 
 }
