@@ -23,13 +23,13 @@
             android:layout_height="wrap_content"
             android:hint="Nama" />
 
-        <EditText
-            android:id="@+id/edtAngkatan"
+        <AutoCompleteTextView
+            android:id="@+id/edtJurusan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Angkatan" />
+            android:hint="Jurusan" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/edtKelas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +39,7 @@
             android:id="@+id/edtTelp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="Telp" />
 
         <EditText
