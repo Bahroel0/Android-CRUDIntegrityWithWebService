@@ -1,21 +1,15 @@
-package com.example.bahroel.crudmahasiswa.Helper;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.example.bahroel.crudmahasiswa.Handler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;

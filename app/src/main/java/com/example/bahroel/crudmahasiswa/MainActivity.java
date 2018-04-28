@@ -6,7 +6,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bahroel.crudmahasiswa.Api.ApiMahasiswa;
-import com.example.bahroel.crudmahasiswa.Helper.RequestHandler;
+import com.example.bahroel.crudmahasiswa.Handler.RequestHandler;
 import com.example.bahroel.crudmahasiswa.Model.Mahasiswa;
 
 import org.json.JSONArray;
