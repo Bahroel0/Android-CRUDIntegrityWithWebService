@@ -18,75 +18,75 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class RequestHandler {
-    public String sendPostRequest(String requestURL, HashMap<String,String> postDataParams){
+    public String sendPostRequest(String requestURL, HashMap<String,String>
+            postDataParams){
         URL url;
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder sb=new StringBuilder();
         try{
-            url = new URL(requestURL);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setReadTimeout(15000);
-            httpURLConnection.setConnectTimeout(15000);
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.setDoOutput(true);
-
-            OutputStream outputStream = httpURLConnection.getOutputStream();
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-            bufferedWriter.write(getPostDataString(postDataParams));
-
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            outputStream.close();
-
-            int responCode = httpURLConnection.getResponseCode();
-            if(responCode == HttpURLConnection.HTTP_OK){
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-                stringBuilder = new StringBuilder();
+            url=new URL(requestURL);
+            HttpURLConnection conn=(HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
+            writer.write(getPostDataString(postDataParams));
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new
+                        InputStreamReader(conn.getInputStream()));
+                sb = new StringBuilder();
                 String response;
-                while((response = bufferedReader.readLine()) != null){
-                    stringBuilder.append(response);
+                //Baca server response
+                while ((response = br.readLine()) != null) {
+                    sb.append(response);
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
-        return stringBuilder.toString();
+        return sb.toString();
     }
-
-    public String sendGetRequest(String requestURL){
-        StringBuilder stringBuilder = new StringBuilder();
+    public String sendGetRequest(String requestURL) {
+        StringBuilder sb = new StringBuilder();
         try {
             URL url = new URL(requestURL);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            BufferedReader bufferedReader = new BufferedReader(new
+                    InputStreamReader(con.getInputStream()));
             String s;
-            while((s = bufferedReader.readLine()) != null){
-                stringBuilder.append(s + "\n");
+            while ((s = bufferedReader.readLine()) != null) {
+                sb.append(s + "\n");
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return stringBuilder.toString();
-
+        return sb.toString();
     }
 
-    private String getPostDataString(HashMap<String,String> postDataParams) throws UnsupportedEncodingException {
+    private String getPostDataString(HashMap<String, String> params)throws
+            UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
-        boolean first = false;
-        for(Map.Entry<String,String> entry : postDataParams.entrySet()){
-            if(first){
+        boolean first = true;
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (first){
                 first = false;
-            }else{
-                result.append("&");
-                result.append(URLEncoder.encode(entry.getKey(),"UTF-8"));
-                result.append("=");
-                result.append(URLEncoder.encode(entry.getKey(),"UTF-8"));
             }
+            else{
+                result.append("&");
+            }
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
         return result.toString();
     }
-
 }
