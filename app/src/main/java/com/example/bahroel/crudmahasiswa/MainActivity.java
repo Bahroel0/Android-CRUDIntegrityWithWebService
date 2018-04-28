@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -30,12 +31,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
 
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
-    EditText edtNrp, edtNama, edtAngkatan, edtKelas, edtTelp, edtAlamat;
+    EditText edtNrp, edtNama, edtTelp, edtAlamat;
+    AutoCompleteTextView edtKelas, edtJurusan;
+    String[] jurusan = {"Elka","Elin","Telkom", "Informatika","Mekatronika","MMB", "Tekkom","Game Tech", "SPE","PLN","GMF"};
+    String[] kelas = {"D3 A","D3 B", "D4 A", "D4 B"};
+    ArrayAdapter<String> jurusanAdapter, kelasAdapter;
     ProgressBar progressBar;
     ListView listView;
     Button btnAdd;
@@ -50,8 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
         edtNrp = (EditText)findViewById(R.id.edtNrp);
         edtNama = (EditText)findViewById(R.id.edtNama);
-        edtAngkatan = (EditText)findViewById(R.id.edtAngkatan);
-        edtKelas = (EditText)findViewById(R.id.edtKelas);
+        edtJurusan = (AutoCompleteTextView) findViewById(R.id.edtJurusan);
+        jurusanAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, jurusan);
+        edtJurusan.setAdapter(jurusanAdapter);
+        edtKelas = (AutoCompleteTextView) findViewById(R.id.edtKelas);
+        kelasAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, kelas);
+        edtKelas.setAdapter(kelasAdapter);
         edtTelp = (EditText)findViewById(R.id.edtTelp);
         edtAlamat = (EditText)findViewById(R.id.edtAlamat);
         btnAdd = (Button) findViewById(R.id.btnTambahkan);
@@ -59,16 +68,74 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.listViewMahasiswa);
 
         mahasiswaList = new ArrayList<Mahasiswa>();
-
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!isUpdating){
                     createMahasiswa();
+                }else{
+                    String nama=edtNama.getText().toString().trim();
+                    String nrp=edtNrp.getText().toString().trim();
+                    String jurusan=edtJurusan.getText().toString().trim();
+                    String kelas=edtKelas.getText().toString().trim();
+                    String telp=edtTelp.getText().toString().trim();
+                    String alamat=edtAlamat.getText().toString().trim();
+                    updateDataMahasiswa(nrp,nama,jurusan,kelas,telp,alamat);
                 }
             }
         });
         readMahasiswa();
+    }
+
+
+    private void createMahasiswa() {
+        String nama=edtNama.getText().toString().trim();
+        String nrp=edtNrp.getText().toString().trim();
+        String jurusan=edtJurusan.getText().toString().trim();
+        String kelas=edtKelas.getText().toString().trim();
+        String telp=edtTelp.getText().toString().trim();
+        String alamat=edtAlamat.getText().toString().trim();
+        if (TextUtils.isEmpty(nrp)) {
+            edtNrp.setError("Please enter NRP");
+            edtNrp.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(nama)) {
+            edtNama.setError("Please enter Nama");
+            edtNama.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(jurusan)) {
+            edtNrp.setError("Please enter Jurusan");
+            edtNrp.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(kelas)) {
+            edtNama.setError("Please enter Kelas");
+            edtNama.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(telp)) {
+            edtNrp.setError("Please enter Telp");
+            edtNrp.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(alamat)) {
+            edtNama.setError("Please enter Alamat");
+            edtNama.requestFocus();
+            return;
+        }
+        HashMap<String, String> params = new HashMap<>();
+        params.put("nrp", nrp);
+        params.put("nama", nama);
+        params.put("jurusan", jurusan);
+        params.put("kelas", kelas);
+        params.put("telp", telp);
+        params.put("alamat", alamat);
+
+        //Memangil create Mahasiswa API
+        PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_C_MHS, params,CODE_POST_REQUEST);
+        request.execute();
     }
 
     private void readMahasiswa() {
@@ -76,60 +143,24 @@ public class MainActivity extends AppCompatActivity {
         request.execute();
     }
 
-    private void createMahasiswa() {
-        String nrp      = edtNrp.getText().toString().trim();
-        String nama     = edtNama.getText().toString().trim();
-        String angkatan  = edtAngkatan.getText().toString().trim();
-        String kelas    = edtKelas.getText().toString().trim();
-        String telp     = edtTelp.getText().toString().trim();
-        String alamat   = edtAlamat.getText().toString().trim();
-
-//        if(TextUtils.isEmpty(nrp)){
-//            edtNrp.setError("Please enter nrp");
-//            edtNrp.requestFocus();
-//            return;
-//        }else if(TextUtils.isEmpty(nama)){
-//            edtNama.setError("Please enter nama");
-//            edtNama.requestFocus();
-//        }else if(TextUtils.isEmpty(jurusan)){
-//            edtJurusan.setError("Please enter jurusan");
-//            edtJurusan.requestFocus();
-//        }else if(TextUtils.isEmpty(kelas)){
-//            edtKelas.setError("Please enter kelas");
-//            edtKelas.requestFocus();
-//        }else if(TextUtils.isEmpty(telp)){
-//            edtTelp.setError("Please enter telp");
-//            edtTelp.requestFocus();
-//        }else if(TextUtils.isEmpty(alamat)){
-//            edtAlamat.setError("Please enter alamat");
-//            edtAlamat.requestFocus();
-//        }
-        HashMap<String,String> params = new HashMap<>();
-        params.put("nrp",nrp);
-        params.put("nama",nama);
-        params.put("angkatan",angkatan);
-        params.put("kelas",kelas);
-        params.put("telp",telp);
-        params.put("alamat",alamat);
-
-
-
-
-        Log.d(TAG, "Nilai params : " + params.toString());
-
-        PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_C_MHS, params, CODE_POST_REQUEST);
-        request.execute();
-
-
-
-
-    }
-
     private void deleteMahasiswa(String nrp) {
-        PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_D_MHS + nrp, null,CODE_GET_REQUEST);
+        PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_D_MHS + nrp, null, CODE_GET_REQUEST);
         request.execute();
     }
 
+    private void updateDataMahasiswa(String nrp,String nama,String jurusan,String kelas,String telp,String alamat){
+        HashMap<String, String> params = new HashMap<>();
+        params.put("nrp", nrp);
+        params.put("nama", nama);
+        params.put("jurusan", jurusan);
+        params.put("kelas", kelas);
+        params.put("telp", telp);
+        params.put("alamat", alamat);
+
+        //Memangil update Mahasiswa API
+        PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_U_MHS, params, CODE_POST_REQUEST);
+        request.execute();
+    }
     public void refreshMahasiswaList(JSONArray mahasiswa) throws JSONException{
         mahasiswaList.clear();
         for (int i = 0; i < mahasiswa.length(); i++) {
@@ -138,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             mahasiswaList.add(new Mahasiswa(
                     obj.getString("nrp"),
                     obj.getString("nama"),
-                    obj.getString("angkatan"),
+                    obj.getString("jurusan"),
                     obj.getString("kelas"),
                     obj.getString("telp"),
                     obj.getString("alamat")
@@ -148,11 +179,15 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
-    private class PerformNetworkRequest extends AsyncTask<Void,Void,String>{
+
+
+
+    private class PerformNetworkRequest extends AsyncTask<Void,Void, String> {
         String url;
-        HashMap<String,String> params;
+        HashMap<String, String> params;
         int requestCode;
-        PerformNetworkRequest(String url, HashMap<String,String> params, int requestCode) {
+        PerformNetworkRequest(String url, HashMap<String, String> params, int
+                requestCode) {
             this.url = url;
             this.params = params;
             this.requestCode = requestCode;
@@ -165,16 +200,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.d(TAG, "Nilai error : " + s);
             progressBar.setVisibility(View.GONE);
             try {
                 JSONObject object = new JSONObject(s);
-                boolean error = object.getBoolean("error");
-//                Log.d(TAG, "Nilai jurusan : " + object.toString());
-
-                if (!error) {
-                    // toast masih error dan tidak muncul
-                    Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_LONG).show();
+                if (!object.getBoolean("error")) {
+                    Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_LONG);
                     refreshMahasiswaList(object.getJSONArray("mahasiswa"));
                 }
             } catch (JSONException e) {
@@ -190,46 +220,46 @@ public class MainActivity extends AppCompatActivity {
                 return requestHandler.sendGetRequest(url);
             return null;
         }
-
     }
 
     public class MahasiswaAdapter extends ArrayAdapter<Mahasiswa> {
         List<Mahasiswa> mahasiswaList;
         public MahasiswaAdapter(List<Mahasiswa> mahasiswaList) {
-            super(MainActivity.this, R.layout.layout_mahasiswa_list, mahasiswaList);
+            super(MainActivity.this, R.layout.layout_mahasiswa_list,
+                    mahasiswaList);
             this.mahasiswaList=mahasiswaList;
         }
         public View getView(int position, View convertView, ViewGroup parent){
             LayoutInflater inflater = getLayoutInflater();
-            View listViewItem = inflater.inflate(R.layout.layout_mahasiswa_list,null, true);
+            View listViewItem = inflater.inflate(R.layout.layout_mahasiswa_list,
+                    null, true);
             TextView textViewNama = listViewItem.findViewById(R.id.textViewNama);
-            TextView textViewUpdate =listViewItem.findViewById(R.id.textViewUpdate);
-            TextView textViewDelete =listViewItem.findViewById(R.id.textViewDelete);
-
+            TextView textViewUpdate =
+                    listViewItem.findViewById(R.id.textViewUpdate);
+            TextView textViewDelete =
+                    listViewItem.findViewById(R.id.textViewDelete);
             final Mahasiswa mahasiswa = mahasiswaList.get(position);
-
             textViewNama.setText(mahasiswa.getNama());
-
             textViewUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     isUpdating=true;
-                    edtNrp.setText(String.valueOf(mahasiswa.getNrp()));
+                    edtNrp.setText(mahasiswa.getNrp());
                     edtNama.setText(mahasiswa.getNama());
-                    edtAngkatan.setText(mahasiswa.getAlamat());
+                    edtJurusan.setText(mahasiswa.getJurusan());
                     edtKelas.setText(mahasiswa.getKelas());
                     edtTelp.setText(mahasiswa.getTelp());
                     edtAlamat.setText(mahasiswa.getAlamat());
                     btnAdd.setText("Update");
+
                 }
             });
-
             textViewDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     AlertDialog.Builder builder = new
                             AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle("Delete " + mahasiswa.getNama())
+                    builder.setTitle("Delete " + mahasiswa.getNrp())
                             .setMessage("Are you sure you want to delete it?")
                             .setPositiveButton(android.R.string.yes, new
                                     DialogInterface.OnClickListener() {
@@ -250,6 +280,5 @@ public class MainActivity extends AppCompatActivity {
             return listViewItem;
         }
     }
-
 
 }
