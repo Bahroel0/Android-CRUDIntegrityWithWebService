@@ -1,7 +1,7 @@
 package com.example.bahroel.crudmahasiswa.Api;
 
 public class ApiMahasiswa {
-    public static final String BASE_URL = "http://192.168.1.6/crud_mahasiswa/api/apiMahasiswa.php?apicall=";
+    public static final String BASE_URL = "http://192.168.0.124/crud_mahasiswa/api/apiMahasiswa.php?apicall=";
 
     public static final String URL_C_MHS = BASE_URL + "create_mahasiswa";
     public static final String URL_R_MHS = BASE_URL + "get_mahasiswa";
