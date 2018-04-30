@@ -32,19 +32,24 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
+    // TAG for error tracing
     private static final String TAG = MainActivity.class.getSimpleName();
+    // code of request
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
+    // initialize component
     EditText edtNrp, edtNama, edtTelp, edtAlamat;
     AutoCompleteTextView edtKelas, edtJurusan;
     String[] jurusan = {"Elka","Elin","Telkom", "Informatika","Mekatronika","MMB", "Tekkom","Game Tech", "SPE","PLN","GMF"};
     String[] kelas = {"D3 A","D3 B", "D4 A", "D4 B"};
+    // Adapter for AutocompeteTextView
     ArrayAdapter<String> jurusanAdapter, kelasAdapter;
     ProgressBar progressBar;
     ListView listView;
     Button btnAdd;
 
     List<Mahasiswa> mahasiswaList;
+    // term condition if form in update or add data
     boolean isUpdating = false;
 
     @Override
@@ -71,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!isUpdating){
+                    // create new data when condition of form is not update
                     createMahasiswa();
                 }else{
+                    // get value from data form.
                     String nama=edtNama.getText().toString().trim();
                     String nrp=edtNrp.getText().toString().trim();
                     String jurusan=edtJurusan.getText().toString().trim();
@@ -83,17 +90,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        // get data mahasiswa in database
         readMahasiswa();
     }
 
 
     private void createMahasiswa() {
+        // get value from a form
         String nama=edtNama.getText().toString().trim();
         String nrp=edtNrp.getText().toString().trim();
         String jurusan=edtJurusan.getText().toString().trim();
         String kelas=edtKelas.getText().toString().trim();
         String telp=edtTelp.getText().toString().trim();
         String alamat=edtAlamat.getText().toString().trim();
+        // exception when there is form that empty
         if (TextUtils.isEmpty(nrp)) {
             edtNrp.setError("Please enter NRP");
             edtNrp.requestFocus();
@@ -105,25 +115,26 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         if (TextUtils.isEmpty(jurusan)) {
-            edtNrp.setError("Please enter Jurusan");
-            edtNrp.requestFocus();
+            edtJurusan.setError("Please enter Jurusan");
+            edtJurusan.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(kelas)) {
-            edtNama.setError("Please enter Kelas");
-            edtNama.requestFocus();
+            edtKelas.setError("Please enter Kelas");
+            edtKelas.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(telp)) {
-            edtNrp.setError("Please enter Telp");
-            edtNrp.requestFocus();
+            edtTelp.setError("Please enter Telp");
+            edtTelp.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(alamat)) {
-            edtNama.setError("Please enter Alamat");
-            edtNama.requestFocus();
+            edtAlamat.setError("Please enter Alamat");
+            edtAlamat.requestFocus();
             return;
         }
+        // make a struct of data using Hashmap and send it to web server
         HashMap<String, String> params = new HashMap<>();
         params.put("nrp", nrp);
         params.put("nama", nama);
@@ -148,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDataMahasiswa(String nrp,String nama,String jurusan,String kelas,String telp,String alamat){
+
         HashMap<String, String> params = new HashMap<>();
         params.put("nrp", nrp);
         params.put("nama", nama);
@@ -160,7 +172,9 @@ public class MainActivity extends AppCompatActivity {
         PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_U_MHS, params, CODE_POST_REQUEST);
         request.execute();
     }
+
     public void refreshMahasiswaList(JSONArray mahasiswa) throws JSONException{
+        // clear an existing array
         mahasiswaList.clear();
         for (int i = 0; i < mahasiswa.length(); i++) {
 
@@ -177,8 +191,6 @@ public class MainActivity extends AppCompatActivity {
         MahasiswaAdapter adapter = new MahasiswaAdapter(mahasiswaList);
         listView.setAdapter(adapter);
     }
-
-
 
 
     private class PerformNetworkRequest extends AsyncTask<Void,Void, String> {
@@ -203,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
+                     android.util.Log.d(TAG, "Nilai s: " + s);
                     Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_LONG);
                     refreshMahasiswaList(object.getJSONArray("mahasiswa"));
                 }
@@ -230,13 +243,13 @@ public class MainActivity extends AppCompatActivity {
         }
         public View getView(int position, View convertView, ViewGroup parent){
             LayoutInflater inflater = getLayoutInflater();
-            View listViewItem = inflater.inflate(R.layout.layout_mahasiswa_list,
-                    null, true);
+            View listViewItem = inflater.inflate(R.layout.layout_mahasiswa_list,null, true);
+
             TextView textViewNama = listViewItem.findViewById(R.id.textViewNama);
-            TextView textViewUpdate =
-                    listViewItem.findViewById(R.id.textViewUpdate);
-            TextView textViewDelete =
-                    listViewItem.findViewById(R.id.textViewDelete);
+            
+            TextView textViewUpdate = listViewItem.findViewById(R.id.textViewUpdate);
+            TextView textViewDelete = listViewItem.findViewById(R.id.textViewDelete);
+
             final Mahasiswa mahasiswa = mahasiswaList.get(position);
             textViewNama.setText(mahasiswa.getNama());
             textViewUpdate.setOnClickListener(new View.OnClickListener() {
