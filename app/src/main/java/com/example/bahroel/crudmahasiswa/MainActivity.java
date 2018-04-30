@@ -246,12 +246,18 @@ public class MainActivity extends AppCompatActivity {
             View listViewItem = inflater.inflate(R.layout.layout_mahasiswa_list,null, true);
 
             TextView textViewNama = listViewItem.findViewById(R.id.textViewNama);
-            
+            TextView textViewNRp = listViewItem.findViewById(R.id.textViewNrp);
+            TextView textViewTelp = listViewItem.findViewById(R.id.textViewTelp);
+            TextView textViewAlamat = listViewItem.findViewById(R.id.textViewAlamat);
+
             TextView textViewUpdate = listViewItem.findViewById(R.id.textViewUpdate);
             TextView textViewDelete = listViewItem.findViewById(R.id.textViewDelete);
 
             final Mahasiswa mahasiswa = mahasiswaList.get(position);
             textViewNama.setText(mahasiswa.getNama());
+            textViewNRp.setText(mahasiswa.getNrp());
+            textViewTelp.setText(mahasiswa.getTelp());
+            textViewAlamat.setText(mahasiswa.getAlamat());
             textViewUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

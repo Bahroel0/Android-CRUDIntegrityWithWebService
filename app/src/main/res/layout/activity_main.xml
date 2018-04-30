@@ -4,57 +4,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.bahroel.crudmahasiswa.MainActivity">
-    <LinearLayout
+    <ScrollView
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:padding="16dp">
-        <EditText
-            android:id="@+id/edtNrp"
+        android:layout_height="wrap_content">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nrp" />
+            android:layout_alignParentTop="true"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <EditText
+                android:id="@+id/edtNrp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nrp" />
 
-        <EditText
-            android:id="@+id/edtNama"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nama" />
+            <EditText
+                android:id="@+id/edtNama"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama" />
 
-        <AutoCompleteTextView
-            android:id="@+id/edtJurusan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Jurusan" />
+            <AutoCompleteTextView
+                android:id="@+id/edtJurusan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Jurusan" />
 
-        <AutoCompleteTextView
-            android:id="@+id/edtKelas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Kelas" />
+            <AutoCompleteTextView
+                android:id="@+id/edtKelas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kelas" />
 
-        <EditText
-            android:id="@+id/edtTelp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="Telp" />
+            <EditText
+                android:id="@+id/edtTelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="Telp" />
 
-        <EditText
-            android:id="@+id/edtAlamat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Alamat" />
+            <EditText
+                android:id="@+id/edtAlamat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Alamat" />
 
-        <Button
-            android:id="@+id/btnTambahkan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="Tambahkan" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnTambahkan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="Tambahkan" />
+        </LinearLayout>
+    </ScrollView>
     <ListView
         android:id="@+id/listViewMahasiswa"
         android:layout_width="match_parent"
