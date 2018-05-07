@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -215,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject object = new JSONObject(s);
                 if (!object.getBoolean("error")) {
-                     android.util.Log.d(TAG, "Nilai s: " + s);
+                     Log.d(TAG, "Nilai s: " + s);
                     Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_LONG);
                     refreshMahasiswaList(object.getJSONArray("mahasiswa"));
                 }
@@ -250,8 +252,8 @@ public class MainActivity extends AppCompatActivity {
             TextView textViewTelp = listViewItem.findViewById(R.id.textViewTelp);
             TextView textViewAlamat = listViewItem.findViewById(R.id.textViewAlamat);
 
-            TextView textViewUpdate = listViewItem.findViewById(R.id.textViewUpdate);
-            TextView textViewDelete = listViewItem.findViewById(R.id.textViewDelete);
+            ImageView textViewUpdate = (ImageView) listViewItem.findViewById(R.id.textViewUpdate);
+            ImageView textViewDelete = (ImageView)listViewItem.findViewById(R.id.textViewDelete);
 
             final Mahasiswa mahasiswa = mahasiswaList.get(position);
             textViewNama.setText(mahasiswa.getNama());
