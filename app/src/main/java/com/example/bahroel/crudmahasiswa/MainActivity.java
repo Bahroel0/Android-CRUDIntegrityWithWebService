@@ -148,6 +148,13 @@ public class MainActivity extends AppCompatActivity {
         //Memangil create Mahasiswa API
         PerformNetworkRequest request = new PerformNetworkRequest(ApiMahasiswa.URL_C_MHS, params,CODE_POST_REQUEST);
         request.execute();
+
+        edtNrp.setText("");
+        edtNama.setText("");
+        edtTelp.setText("");
+        edtAlamat.setText("");
+        edtJurusan.setText("");
+        edtKelas.setText("");
     }
 
     private void readMahasiswa() {
